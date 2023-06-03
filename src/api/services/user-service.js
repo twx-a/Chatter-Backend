@@ -1,6 +1,7 @@
 const userSchema = require("../models/user-model");
 const HttpError = require("../models/http-error");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 
 const getAllUsers = async (condition) => {
   try {
@@ -12,8 +13,7 @@ const getAllUsers = async (condition) => {
       return users;
     }
   } catch (err) {
-    const error = new HttpError("Could not retrieve users", 500);
-    return next(error);
+    throw new Error("Could not retrieve users");
   }
 };
 
@@ -22,65 +22,123 @@ const getUserById = async (userId) => {
     const user = await userSchema.findById(userId);
     return user;
   } catch (err) {
-    const error = new HttpError("could not find user", 500);
-    return next(error);
+    throw new Error("could not find user");
   }
 };
 
 const login = async (username, password) => {
   let existingUser;
   try {
-    existingUser = userSchema.findOne({ username: username });
+    existingUser = await userSchema.findOne({ username: username });
   } catch (err) {
-    const error = new HttpError("Could not find user", 500);
-    return next(error);
+    throw new Error("Login failed, Please try again ");
   }
 
   if (!existingUser) {
-    const error = new HttpError("Could not find user");
-    return next(error);
+    throw new Error("Could not find user");
   }
 
+  let isPasswordValid;
+  try{
+    isPasswordValid = bcrypt.compare(password, existingUser.password);
+  }catch(err){
+    throw new Error("Wrong credentials, please try again");
+  }
+
+  const tokenData = {
+    username: existingUser.username
+  };
+
+  let token;
+  try{
+    token = jwt.sign(tokenData, "super-secret-password", {expiresIn: "1h"});
+  }catch(err){
+    throw new Error("token creation failed");
+  }
+
+  tokenData.token = token;
+  return tokenData;
 };
 
 const register = async (username, password) => {
-    let existingUser;
-    try{
-        existingUser = userSchema.findOne({username: username});
-    }catch(err){
-        const error = new HttpError('Register failed');
-        return next(error);
-    }
+  let existingUser;
+  try {
+    existingUser = await userSchema.findOne({ username: username });
+  } catch (err) {
+    throw new Error("Register failed");
+  }
 
-    if(existingUser){
-        const error = new HttpError('Register failed');
-        return nextt(error);
-    }
+  if (existingUser) {
+    throw new Error("User already exists");
+  }
 
-    let hashPassword;
-    try{
-        hashPassword = await bcrypt.hash(password, 12);
-    }catch(err){
-        const error = new HttpError('hashing of password failed');
-        return next(error);
-    }
+  let hashPassword;
+  try {
+    hashPassword = await bcrypt.hash(password, 12);
+  } catch (err) {
+    throw new Error("hashing of password failed");
+  }
 
-    const newUser = new userSchema({
-        username,
-        password: hashPassword
-    });
+  const newUser = new userSchema({
+    username,
+    password: hashPassword,
+  });
 
-    try{
-        await newUser.save();
-    }catch(err){
-        const error = new HttpError('creating user failed', 500);
-        return next(error);
-    }
+  try {
+    await newUser.save();
+  } catch (err) {
+    throw new Error("creating user failed");
+  }
+
+  const tokenData = {
+    name: newUser.username
+  };
+
+  let token;
+  try{
+    token = jwt.sign(tokenData, "super-secret-password", {expiresIn: "1h"});
+  }catch(err){
+    throw new Error("Failed to create token");
+  }
+  tokenData.token = token;
+  return tokenData;
 };
 
-const updateUser = () => {};
+const updateUser = async (userId, username) => {
+  let existingUser;
+  try{
+    existingUser = await userSchema.findById(userId);
+  }catch(err){
+    throw new Error('User not found');
+  }
 
-const deleteUser = () => {};
+  console.log(userId, username);
+
+  if(!existingUser){
+    throw new Error('User not found');
+  }
+
+  existingUser.username = username;
+
+  try{
+    await existingUser.save();
+  }catch(err){
+    throw new Error('update user fail');
+  }
+}  
+
+const deleteUser = async (userId) => {
+  let result;
+  try{
+    result = await userSchema.deleteOne({_id: userId});
+  }catch(err){
+    throw new Error('Delete user failed');
+  }
+  
+  if(result.deleteCount === 0){
+    throw new Error('user not found')
+  }
+};
 
 module.exports = {
   getAllUsers,

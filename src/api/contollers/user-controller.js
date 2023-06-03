@@ -22,28 +22,30 @@ const getUserById = async (req, res, next) => {
     }
 };
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
     const {username, password} = req.body;
+    const loginToken = await userService.login(username, password);
+    res.json({loginToken: loginToken});
     
 }
 
 const register = async (req, res, next) => {
     const {username, password} = req.body;
-    try{
-        const newUser = await userService.register(username, password);
-        res.status(201).json({message: 'User created'});
-    }catch(err){
-        const error = new HttpError('Something went wrong');
-        return next(error);
-    }
+    const newUser = await userService.register(username, password);
+    res.status(201).json({tokenData: newUser});
 }
 
-const updateUser = (req, res, next) => {
-
+const updateUser = async (req, res, next) => {
+    const userId = req.params.userId;
+    const {username} = req.body;
+    const updatedUser = await userService.updateUser(userId, username);
+    res.json({'Message': 'User updated'});
 }
 
-const deleteUser = (req, res, next) => {
-
+const deleteUser = async (req, res, next) => {
+    const userId = req.params.userId;
+    const result = await userService.deleteUser(userId);
+    res.json({'Message': 'User deleted'});
 }
 
 module.exports = {

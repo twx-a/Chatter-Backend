@@ -6,10 +6,12 @@ const dbUrl = process.env.MONGODB_URL;
 const app = express();
 const userRoutes = require("./src/api/routes/user-routes");
 const HttpError = require("./src/api/models/http-error");
+const contentRoutes =  require('./src/api/routes/content-routes');
 
 app.use(express.json());
 
 app.use("/api/users", userRoutes);
+app.use("/api/contents", contentRoutes);
 
 app.use((req, res, next) => {
   const error = new HttpError("Could not find route", 404);

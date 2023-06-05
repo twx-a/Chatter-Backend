@@ -2,6 +2,7 @@ const userSchema = require("../models/user-model");
 const HttpError = require("../models/http-error");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
+require("dotenv").config({ path: ".env.dev" });
 
 const getAllUsers = async (condition) => {
   try {
@@ -61,6 +62,7 @@ const login = async (username, password) => {
 };
 
 const register = async (username, password) => {
+  const tokenPassword = process.env.tokenPassword;
   let existingUser;
   try {
     existingUser = await userSchema.findOne({ username: username });
@@ -96,7 +98,7 @@ const register = async (username, password) => {
 
   let token;
   try{
-    token = jwt.sign(tokenData, "super-secret-password", {expiresIn: "1h"});
+    token = jwt.sign(tokenData, tokenPassword, {expiresIn: "1h"});
   }catch(err){
     throw new Error("Failed to create token");
   }
@@ -112,12 +114,10 @@ const updateUser = async (userId, username) => {
     throw new Error('User not found');
   }
 
-  console.log(userId, username);
 
   if(!existingUser){
     throw new Error('User not found');
   }
-
   existingUser.username = username;
 
   try{
@@ -135,7 +135,7 @@ const deleteUser = async (userId) => {
     throw new Error('Delete user failed');
   }
   
-  if(result.deleteCount === 0){
+  if(result.deletedCount === 0){
     throw new Error('user not found')
   }
 };

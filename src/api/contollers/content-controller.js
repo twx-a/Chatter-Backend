@@ -11,6 +11,16 @@ const getContentById = async (req, res, next) => {
   res.json({ content: content });
 };
 
+const createContent = async (req, res, next) => {
+  const {userinput, categoryId, userId, commentId} = req.body;
+  try{
+    await contentService.createContent(userinput, categoryId, userId, commentId);
+    res.json({message: 'Content created'});
+  }catch(err){
+    throw new Error('Failed to create new content');
+  }
+};
+
 const updateContent = async (req, res, next) => {
   const contentId = req.params.contentId;
   const { userinput } = req.body;
@@ -36,4 +46,5 @@ module.exports = {
   getContentById,
   updateContent,
   deleteContent,
+  createContent
 };

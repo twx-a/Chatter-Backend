@@ -5,6 +5,8 @@ const contentController = require('../contollers/content-controller');
 router.get('/', contentController.getAllContent);
 router.get('/:userId', contentController.getContentById);
 
+router.post('/createcontent', contentController.createContent);
+
 router.patch('/:contentId', contentController.updateContent);
 
 router.delete('/:contentId', contentController.deleteContent);

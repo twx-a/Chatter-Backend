@@ -27,6 +27,21 @@ const getContentById = async (userId) => {
   }
 };
 
+const createContent = async (userinput, categoryId, userId, commentId) => {
+  const newContent = new contentSchema({
+    userinput,
+    categoryId,
+    userId,
+    commentId
+  });
+
+  try{
+    await newContent.save();
+  }catch(err){
+    throw new Error('Failed to create content');
+  }
+};
+
 const updateContent = async (contentId, userinput) => {
   let content;
   try{
@@ -65,5 +80,6 @@ module.exports = {
   getAllContent,
   getContentById,
   updateContent,
-  deleteContent
+  deleteContent,
+  createContent
 };

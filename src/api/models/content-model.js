@@ -5,7 +5,8 @@ const uniqueValidator = require('mongoose-unique-validator');
 const contentSchema = new mongoose.Schema({
     userinput: {
         type: String,
-        maxlength: 250
+        maxlength: 250,
+        required: true
     },
     categoryId: {
         type: String,

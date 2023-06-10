@@ -2,7 +2,26 @@ const contentSchema = require("../models/content-model");
 
 const getAllContent = async () => {
   try {
-    const content = await contentSchema.find();
+    const content = await contentSchema.find().populate([{
+      path: 'userId',
+      select: '-_id -password'
+    },
+    {
+      path: 'categoryId',
+      select: '-_id',
+      populate:{
+        path: 'subcatId',
+        select: '-_id'
+      }
+    },
+    {
+      path: 'commentId',
+      select: '-_id',
+      populate: {
+        path: 'userId',
+        select: '-password -_id'
+      }
+    }]);
     return content;
   } catch (err) {
     throw new Error("No content Found");

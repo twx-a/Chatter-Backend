@@ -9,7 +9,8 @@ const contentSchema = new mongoose.Schema({
         required: true
     },
     categoryId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'category',
         required: true
     },
     userId: {
@@ -17,10 +18,13 @@ const contentSchema = new mongoose.Schema({
         ref: 'user',
         required: true
     },
-    commentId: {
-        type: String,
-        required: true
-    }
+    commentId: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'comment',
+            required: true
+        }
+    ]
 
 },{validateBeforeSave: true});
 

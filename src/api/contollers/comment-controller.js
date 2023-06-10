@@ -11,14 +11,7 @@ const getAllCommentsByUserId = async (req, res, next) => {
     res.json({comments: comments});
 }
 
-const getAllCommentsByContentId = async (req, res, next) => {
-    const contentId = req.params.contentId;
-    const comments = await commentService.getAllCommentsByContentId(contentId);
-    res.json({comments: comments});
-}
-
 module.exports = {
     getAllCommentsByUserId,
-    getAllCommentsByContentId,
     getAllComments
 }

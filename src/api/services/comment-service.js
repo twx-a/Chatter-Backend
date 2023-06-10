@@ -19,17 +19,7 @@ const getAllCommentsByUserId = async (userId) => {
     }
 }
 
-const getAllCommentsByContentId = async (contentId) => {
-    try{
-        const comments = await commentSchema.find({contentId: contentId});
-        return comments;
-    }catch(err){
-        throw new Error('No comments found');
-    }
-}
-
 module.exports = {
     getAllCommentsByUserId,
-    getAllCommentsByContentId,
     getAllComments
 }

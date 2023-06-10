@@ -12,13 +12,7 @@ const commentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
         required: true
-    },
-    contentId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'content',
-        required: true
     }
-
 },{validateBeforeSave: true});
 
 commentSchema.plugin(uniqueValidator);

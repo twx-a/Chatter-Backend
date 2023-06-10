@@ -8,6 +8,7 @@ const userRoutes = require("./src/api/routes/user-routes");
 const contentRoutes =  require('./src/api/routes/content-routes');
 const commentRoutes = require('./src/api/routes/comment-routes');
 const subcatRoutes = require('./src/api/routes/subCat-routes');
+const categoryRoutes = require('./src/api/routes/category-routes');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/contents", contentRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/subcategories", subcatRoutes);
+app.use('/api/categories', categoryRoutes);
 
 app.use((req, res, next) => {
   const error = new HttpError("Could not find route", 404);

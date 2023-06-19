@@ -36,14 +36,18 @@ const login = async (username, password) => {
   }
 
   if (!existingUser) {
-    throw new Error("Could not find user");
+    throw new Error("Invalid credentials, could not log you in");
   }
 
   let isPasswordValid;
   try{
-    isPasswordValid = bcrypt.compare(password, existingUser.password);
+    isPasswordValid = await bcrypt.compare(password, existingUser.password);
   }catch(err){
     throw new Error("Wrong credentials, please try again");
+  }
+
+  if(!isPasswordValid){
+    throw new Error("Invalid credentials, could not log you in");
   }
 
   const tokenData = {

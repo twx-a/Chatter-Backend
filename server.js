@@ -14,13 +14,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/api/users", userRoutes);
-app.use("/api/contents", contentRoutes);
-app.use("/api/comments", commentRoutes);
-app.use("/api/subcategories", subcatRoutes);
-app.use('/api/categories', categoryRoutes);
-
-
+//prevent cors error
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");                    
   res.setHeader(
@@ -30,6 +24,14 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
   next();
 });
+
+app.use("/api/users", userRoutes);
+app.use("/api/contents", contentRoutes);
+app.use("/api/comments", commentRoutes);
+app.use("/api/subcategories", subcatRoutes);
+app.use('/api/categories', categoryRoutes);
+
+
 
 app.use((req, res, next) => {
   const error = new HttpError("Could not find route", 404);

@@ -51,6 +51,7 @@ const login = async (username, password) => {
   }
 
   const tokenData = {
+    userId: existingUser._id,
     username: existingUser.username
   };
 

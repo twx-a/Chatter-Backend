@@ -9,7 +9,7 @@ const getAllContent = async () => {
     {
       path: 'categoryId',
       select: '-_id',
-      populate:{
+      populate: {
         path: 'subcatId',
         select: '-_id'
       }
@@ -46,51 +46,50 @@ const getContentById = async (userId) => {
   }
 };
 
-const createContent = async (userinput, categoryId, userId, commentId) => {
+const createContent = async (userinput, categoryId, userId) => {
   const newContent = new contentSchema({
     userinput,
     categoryId,
-    userId,
-    commentId
+    userId
   });
 
-  try{
+  try {
     await newContent.save();
-  }catch(err){
+  } catch (err) {
     throw new Error('Failed to create content');
   }
 };
 
 const updateContent = async (contentId, userinput) => {
   let content;
-  try{
+  try {
     content = await contentSchema.findById(contentId);
-  }catch(err){
+  } catch (err) {
     throw new Error('Cannot find content');
   }
 
-  if(!content){
+  if (!content) {
     throw new Error('Cannot find content');
   }
 
   content.userinput = userinput;
 
-  try{
+  try {
     await content.save();
-  }catch(err){
+  } catch (err) {
     throw new Error('Upgrade failed');
   }
 }
 
 const deleteContent = async (contentId) => {
   let result;
-  try{
-    result = await contentSchema.deleteOne({_id: contentId});
-  }catch(err){
+  try {
+    result = await contentSchema.deleteOne({ _id: contentId });
+  } catch (err) {
     throw new Error('Delete failed');
   }
 
-  if(result.deletedCount === 0){
+  if (result.deletedCount === 0) {
     throw new Error('No content found for Id');
   }
 }

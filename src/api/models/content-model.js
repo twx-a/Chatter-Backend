@@ -21,8 +21,7 @@ const contentSchema = new mongoose.Schema({
     commentId: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'comment',
-            required: true
+            ref: 'comment'
         }
     ]
 

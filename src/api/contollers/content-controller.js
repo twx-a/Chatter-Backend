@@ -12,9 +12,9 @@ const getContentById = async (req, res, next) => {
 };
 
 const createContent = async (req, res, next) => {
-  const {userinput, categoryId, userId, commentId} = req.body;
+  const {userinput, categoryId, userId} = req.body;
   try{
-    await contentService.createContent(userinput, categoryId, userId, commentId);
+    await contentService.createContent(userinput, categoryId, userId);
     res.json({message: 'Content created'});
   }catch(err){
     throw new Error('Failed to create new content');

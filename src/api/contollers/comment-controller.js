@@ -11,7 +11,18 @@ const getAllCommentsByUserId = async (req, res, next) => {
     res.json({comments: comments});
 }
 
+const createComment = async (req, res, next) => {
+    const { userinput, contentId, userId } = req.body;
+    try {
+        await commentService.createComment(userinput, contentId, userId);
+        res.json({ message: 'Comment Created' });
+    } catch (err) {
+        throw new Error('Failed to create new comment');
+    }
+};
+
 module.exports = {
     getAllCommentsByUserId,
-    getAllComments
+    getAllComments,
+    createComment
 }

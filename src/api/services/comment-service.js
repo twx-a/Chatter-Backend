@@ -48,7 +48,7 @@ const createComment = async (comments, userId, contentId) => {
         await existingContent.save();
     }
 
-    console.log("new comment: ", existingContent)
+
 };
 module.exports = {
     getAllCommentsByUserId,

@@ -71,7 +71,7 @@ const updateContent = async (contentId, userinput) => {
   if (!content) {
     throw new Error('Cannot find content');
   }
-
+ 
   content.userinput = userinput;
 
   try {

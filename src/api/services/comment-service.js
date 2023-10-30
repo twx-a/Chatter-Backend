@@ -14,36 +14,41 @@ const getAllComments = async () => {
 const getAllCommentsByUserId = async (userId) => {
     try{
         const comments = await commentSchema.find({userId: userId});
-        console.log(comments)
         return comments;
     }catch(err){
         throw new Error('No comments found');
     }
 }
 
-const createComment = async (userinput, contentId, userId) => {
+const createComment = async (comments, userId, contentId) => {
 
-    const existingUser = await userSchema.findOne({userId: userId});
+    const existingUser = await userSchema.findOne({_id: userId});
     if(!existingUser){
         throw new Error("Invalid User");
     }
 
-    const existingContent = await contentSchema.findOne({contentId: contentId});
+    const existingContent = await contentSchema.findOne({_id: contentId});
 
     if(!existingContent){
         throw new Error("No content found");
     }
     const newComment = new commentSchema({
-        userinput,
-        contentId,
+        comments,
         userId
     });
-
+    let result;
     try {
-        await newComment.save();
+        result = await newComment.save();
     } catch (err) {
         throw new Error('Failed to create content');
     }
+
+    if(result){
+        existingContent.commentId.push(result._id);
+        await existingContent.save();
+    }
+
+    console.log("new comment: ", existingContent)
 };
 module.exports = {
     getAllCommentsByUserId,

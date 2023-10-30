@@ -12,11 +12,12 @@ const getAllCommentsByUserId = async (req, res, next) => {
 }
 
 const createComment = async (req, res, next) => {
-    const { userinput, contentId, userId } = req.body;
+    const { comments, userId, contentId } = req.body;
     try {
-        await commentService.createComment(userinput, contentId, userId);
+        await commentService.createComment(comments, userId, contentId);
         res.json({ message: 'Comment Created' });
     } catch (err) {
+        console.log("error: ", err.message)
         throw new Error('Failed to create new comment');
     }
 };
